@@ -4,7 +4,6 @@ import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "./firebaseConfig";
 import HistoricalGraph from "./graph";
-import { Head } from "@inertiajs/react";
 
 const CircularProgress = ({ percentage }: { percentage: number }) => {
   const radius = 60;
