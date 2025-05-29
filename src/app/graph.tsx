@@ -71,24 +71,28 @@ const HistoricalGraph: React.FC = () => {
       if (rawData) {
         if (filter === "daily") {
           Object.keys(rawData).forEach((time) => {
-            const entry = rawData[time] as Entry;
-            formattedData.push({
-              time,
-              temperature: entry.temperature,
-              humidity: entry.humidity,
-            });
+            const entry = rawData[time];
+            // Pastikan entry adalah Entry
+            if (isEntry(entry)) {
+              formattedData.push({
+                time,
+                temperature: entry.temperature,
+                humidity: entry.humidity,
+              });
+            }
           });
         } else if (filter === "monthly") {
           Object.keys(rawData).forEach((day) => {
             const dayData = rawData[day] as Record<string, Entry>;
             const averageTemp =
               Object.values(dayData).reduce(
-                (acc, entry) => acc + entry.temperature,
+                (acc, entry) =>
+                  isEntry(entry) ? acc + entry.temperature : acc,
                 0
               ) / Object.keys(dayData).length;
             const averageHumidity =
               Object.values(dayData).reduce(
-                (acc, entry) => acc + entry.humidity,
+                (acc, entry) => (isEntry(entry) ? acc + entry.humidity : acc),
                 0
               ) / Object.keys(dayData).length;
             formattedData.push({
@@ -102,6 +106,18 @@ const HistoricalGraph: React.FC = () => {
 
       setData(formattedData);
     };
+
+    // Helper function untuk memastikan tipe Entry
+    function isEntry(obj: unknown): obj is Entry {
+      return (
+        typeof obj === "object" &&
+        obj !== null &&
+        "temperature" in obj &&
+        "humidity" in obj &&
+        typeof (obj as Entry).temperature === "number" &&
+        typeof (obj as Entry).humidity === "number"
+      );
+    }
 
     const dataListener = onValue(dataRef, processData);
 
