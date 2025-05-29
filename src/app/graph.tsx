@@ -239,8 +239,8 @@ const HistoricalGraph: React.FC = () => {
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
+              selected={selectedDate || undefined}
+              onSelect={(day) => setSelectedDate(day || null)}
               initialFocus
             />
           </PopoverContent>
